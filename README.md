@@ -1,5 +1,17 @@
 # AI-CHATBOT-WITH-NLP
 
+**COMPANY**: CODTECH IT SOLUTIONS
+
+**NAME**: K.Sai Santhosh Reddy
+
+**INTERN ID**: CT04DF611
+
+**DOMAIN**: PYTHON
+
+**DURATION**: 4 WEEKS (MAY 30TH,2025 TO JUNE 30TH,2025)
+
+**MENTOR**: NEELA SANTOSH.
+
 ## **Overview of the Chatbot Code**
 
 This Python script is a simple rule-based chatbot that uses the Natural Language Toolkit (NLTK) to preprocess user inputs and match them against a set of predefined patterns. Based on the matched intent, the chatbot returns a relevant response. It serves as a foundational example of natural language processing (NLP) for beginners and includes features such as lemmatization, stopword removal, and pattern matching.
