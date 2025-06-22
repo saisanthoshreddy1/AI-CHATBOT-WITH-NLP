@@ -104,4 +104,6 @@ With the correct syntax, it ensures modularity and prevents the chatbot from run
 
 In summary, this chatbot uses fundamental NLP techniques such as tokenization, lemmatization, and stopword removal to match user input to predefined intents. It's a great entry point for building conversational agents and can be easily extended with more intents, smarter matching algorithms or a graphical/web interface.
 
+##**OUTPUT**
 
+![Image](https://github.com/user-attachments/assets/584e1841-abd2-4b80-8dd4-217386ae8b91)
