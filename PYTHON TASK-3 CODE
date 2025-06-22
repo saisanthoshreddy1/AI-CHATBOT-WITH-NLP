@@ -1,0 +1,122 @@
+import nltk
+import re
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+import random
+
+# Download required NLTK data 
+nltk.download('wordnet', quiet=True)
+nltk.download('stopwords', quiet=True)
+
+# Initialize lemmatizer and stopwords list
+lemmatizer = WordNetLemmatizer()
+stop_words = set(stopwords.words('english'))
+
+def preprocess(text):
+    """
+    Preprocess the input text:
+    - Convert to lowercase
+    - Tokenize using regex
+    - Remove stopwords
+    - Lemmatize tokens
+    """
+    text = text.lower()
+    tokens = re.findall(r'\b\w+\b', text)  # regex to extract words
+    tokens = [word for word in tokens if word not in stop_words]
+    tokens = [lemmatizer.lemmatize(word) for word in tokens]
+    return tokens
+
+# Predefined intents and responses
+knowledge_base = {
+    "greeting": {
+        "patterns": ["hello", "hi", "hey", "good morning", "good evening", "what's up", "howdy"],
+        "responses": ["Hey there! How can I help you today?", "Hi! Need something?", "Hello! What brings you here today?"]
+    },
+    "goodbye": {
+        "patterns": ["bye", "goodbye", "see you", "farewell", "take care"],
+        "responses": ["Goodbye! Take care", "See you around!", "Catch you later! Stay safe."]
+    },
+    "thanks": {
+        "patterns": ["thanks", "thank you", "appreciate it", "thank you very much", "thx"],
+        "responses": ["You're most welcome!", "No problem at all!", "Glad I could help!"]
+    },
+    "who_are_you": {
+        "patterns": ["who are you", "what is your name", "identify yourself", "your name"],
+        "responses": ["I'm just your friendly chatbot, always ready to assist you!", "I'm a virtual assistant built using NLP — nice to meet you!"]
+    },
+    "help": {
+        "patterns": ["help", "can you help me", "i need assistance", "support"],
+        "responses": ["Of course! Just tell me what you're looking for.", "Sure thing! I’m here to help. What do you need?"]
+    },
+    "time": {
+        "patterns": ["what time is it", "current time", "tell me the time"],
+        "responses": [lambda: "I’m sorry, I cannot provide real-time data right now."]
+    },
+    "default": {
+        "responses": [
+            "I'm not quite sure what you mean. Could you rephrase that?",
+            "I'm still learning. Can you try saying that differently?",
+            "That one went over my head. Ask me something else?"
+        ]
+    }
+}
+
+def match_intent(user_input):
+    """
+    Match user input to an intent by comparing token overlap with pattern examples.
+    Returns the best matched intent or None.
+    """
+    tokens = preprocess(user_input)
+    if not tokens:
+        return None
+
+    best_match = None
+    highest_score = 0
+
+    for intent, data in knowledge_base.items():
+        if intent == "default":
+            continue
+        for pattern in data["patterns"]:
+            pattern_tokens = preprocess(pattern)
+            score = len(set(tokens) & set(pattern_tokens))  # count common tokens
+            if score > highest_score:
+                highest_score = score
+                best_match = intent
+    return best_match
+
+def get_response(intent):
+    """
+    Generate a response based on the matched intent.
+    If response is a function (e.g., lambda), call it.
+    Otherwise, return a random static response.
+    """
+    if intent and intent in knowledge_base:
+        responses = knowledge_base[intent]["responses"]
+        response = random.choice(responses)
+        return response() if callable(response) else response
+    return random.choice(knowledge_base["default"]["responses"])
+
+def chatbot():
+    """
+    Main function that runs the chatbot in a command-line loop.
+    Handles user input and exits on command.
+    """
+    print("Hello! I'm your NLP chatbot.")
+    print("Feel free to chat with me. Type 'exit', 'quit', or 'bye' when you're done.\n")
+
+    while True:
+        try:
+            user_input = input("You: ").strip()
+            if user_input.lower() in ["exit", "quit", "bye"]:
+                print("Chatbot: It was great chatting with you! Goodbye.")
+                break
+            intent = match_intent(user_input)
+            response = get_response(intent)
+            print("Chatbot:", response)
+        except (KeyboardInterrupt, EOFError):
+            print("\nChatbot: Exiting. Take care!")
+            break
+
+# Entry point
+if _name_ == "_main_":
+    chatbot()
